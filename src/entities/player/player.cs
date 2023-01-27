@@ -1,8 +1,10 @@
 using Godot;
 using System;
 
-public class player : KinematicBody2D
-{
+/// <summary>
+/// Controls for Ella, representing the player
+/// </summary>
+public class player : KinematicBody2D {
 	# region Constants
 	// Sprite constants
 	private const int ARM_RIGHT_Y_STAND = -133;
@@ -17,7 +19,7 @@ public class player : KinematicBody2D
 	private const int SPEED = 500;
 	private const int SPRINT_SPEED = 900;
 	private const double IN_AIR_SPEED_MOD = 0.02;
-	private const double ACCEL = 0.25;
+	private const float ACCEL = 0.25F;
 	
 	// Weapon constants
 	private const string PISTOL = "pistol";
@@ -26,28 +28,75 @@ public class player : KinematicBody2D
 	# endregion
 	
 	# region Properties
+	// Animation properties
+	private AnimatedSprite sprite { get; set; }
+
 	// Movement properties
 	private Vector2 vel = new Vector2();
-	private float prior_x_vel { get; set; }
-	private float wall_jump_x_vel { get; set; }
-	private bool is_wall_sliding = false;
+
+	// Weapon properties
+	private Node2D left_weapon { get; set; }
+	private Node2D right_weapon { get; set; }
 	
 	# endregion
 
 	# region Engine Methods
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
+	public override void _Ready() {
+		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+	}
+
+    /// Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(float delta) {
+		int inputXVelocity = 0;
+		bool isSprinting = false;
+		bool isOnFloor = IsOnFloor();
+
+		// Handle horizontal movement inputs
+		if (Input.IsActionPressed("move_left")) inputXVelocity -= 1;
+		if (Input.IsActionPressed("move_right")) inputXVelocity += 1;
+		if (Input.IsActionPressed("sprint")) isSprinting = true;
+
+		// Handle vertical movement inputs
+		if (Input.IsActionJustPressed("jump") && isOnFloor) {
+			vel.y = JUMP_FORCE;
+		}
+
+		if (!isOnFloor) {
+			vel.y += GRAVITY * delta;
+		}
+
+		// Make sure sprite is facing right direction
+		HandleSpriteDirection();
+
+		int moveSpeed = isSprinting ? SPRINT_SPEED : SPEED;
+		vel.x = Mathf.Lerp(vel.x, inputXVelocity * moveSpeed, ACCEL);
+		vel = MoveAndSlide(vel, Vector2.Up);
 		
 	}
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 	# endregion
 	# region Util Methods
+
+	/// <summary>
+	/// Determine which direction the sprites should be facing based on cursor position
+	/// </summary>
+	private void HandleSpriteDirection() {
+		if (GetGlobalMousePosition().x < GlobalPosition.x) {
+			FlipSprites(true);
+		} else {
+			FlipSprites(false);
+		}
+	}
+
+	/// <summary>
+	/// Flip the main and connected sprites
+	/// </summary>
+	private void FlipSprites(bool flip) {
+		sprite.FlipH = flip;
+
+		// Add weapon handling here
+	}
 
 	/// <summary>
 	/// Gets the resource file associated with a weapon constant
