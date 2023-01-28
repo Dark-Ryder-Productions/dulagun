@@ -65,6 +65,9 @@ public class player : KinematicBody2D {
 		if (Input.IsActionJustPressed("equip_shotguns")) SwitchBothWeapons(WeaponEnum.Shotgun);
 		if (Input.IsActionJustPressed("equip_unarmed")) SwitchBothWeapons(WeaponEnum.Unarmed);
 
+		if (Input.IsActionJustPressed("fire_left_weapon")) FireWeapon(leftWeapon);
+		if (Input.IsActionJustPressed("fire_right_weapon")) FireWeapon(rightWeapon);
+
 		// Let gravity take effect
 		if (!isOnFloor) {
 			vel.y += GRAVITY * delta;
@@ -118,6 +121,19 @@ public class player : KinematicBody2D {
 
 	# endregion
 	# region Weapon Handling
+
+	/// <summary>
+    /// Handles firing a given weapon
+    /// </summary>
+	private void FireWeapon(BaseWeapon weapon) {
+		if (weapon == null || (weapon.GetWeaponEnum().GetWeaponType() != WeaponTypeEnum.AutoGun && weapon.isFiring)) {
+			return;
+		}
+
+		weapon.isFiring = true;
+		weapon.Fire();
+		if (IsInstanceValid(weapon)) weapon.isFiring = false;
+	}
 
 	/// <summary>
 	/// Switches 1 given hand to use 1 given weapon
