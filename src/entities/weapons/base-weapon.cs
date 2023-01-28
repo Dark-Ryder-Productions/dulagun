@@ -1,15 +1,17 @@
 using Godot;
 using System;
+using Dulagun.Shared.Enums;
 
-namespace entities.weapons {
+namespace Dulagun.Weapons {
     /// <summary>
-    // Base class to define shared traits and methods of weapons
+    /// Base class to define shared traits and methods of weapons
     /// </summary>
     public abstract class BaseWeapon : Node2D {
-        public abstract string GetWeaponName();
+        public abstract WeaponEnum GetWeaponEnum();
 
-        public abstract string GetWeaponType();
-
+        /// <summary>
+        /// Tracks if this weapon is wielded by the left hand or not (assumed right hand if not)
+        /// </summary>
         public bool isLeft = false;
     }
 }

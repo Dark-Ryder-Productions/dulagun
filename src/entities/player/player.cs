@@ -1,6 +1,7 @@
 using Godot;
 using System;
-using entities.weapons;
+using Dulagun.Weapons;
+using Dulagun.Shared.Enums;
 
 /// <summary>
 /// Controls for Ella, representing the player
@@ -21,13 +22,8 @@ public class player : KinematicBody2D {
 	private const int SPRINT_SPEED = 900;
 	private const double IN_AIR_SPEED_MOD = 0.02;
 	private const float ACCEL = 0.25F;
-	
-	// Weapon constants
-	private const string PISTOL = "pistol";
-	private const string SHOTGUN = "shotgun";
-	private const string UNARMED = "unarmed";
-	# endregion
-	
+
+	# endregion	
 	# region Properties
 	// Animation properties
 	private AnimatedSprite sprite { get; set; }
@@ -45,7 +41,7 @@ public class player : KinematicBody2D {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
-		SwitchBothWeapons(UNARMED);
+		SwitchBothWeapons(WeaponEnum.Unarmed);
 	}
 
     /// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -64,6 +60,7 @@ public class player : KinematicBody2D {
 			vel.y = JUMP_FORCE;
 		}
 
+		// Let gravity take effect
 		if (!isOnFloor) {
 			vel.y += GRAVITY * delta;
 		}
@@ -71,6 +68,7 @@ public class player : KinematicBody2D {
 		// Make sure sprite is facing right direction
 		HandleSpriteDirection();
 
+		// Compute velocity and apply
 		int moveSpeed = isSprinting ? SPRINT_SPEED : SPEED;
 		vel.x = Mathf.Lerp(vel.x, inputXVelocity * moveSpeed, ACCEL);
 		vel = MoveAndSlide(vel, Vector2.Up);
@@ -119,37 +117,38 @@ public class player : KinematicBody2D {
 	/// <summary>
 	/// Switches 1 given hand to use 1 given weapon
 	/// </summary>
-	private void SwitchSingleWeapon(string weaponName, bool isLeft) {
+	private void SwitchSingleWeapon(WeaponEnum weapon, bool isLeft) {
 		UnequipWeapon(isLeft);
-		EquipWeapon(weaponName, isLeft);
+		EquipWeapon(weapon, isLeft);
 	}
 
 	/// <summary>
 	/// Switches both hands to use 1 given weapon
 	/// </summary>
-	private void SwitchBothWeapons(string weaponName) {
-		SwitchSingleWeapon(weaponName, true);
-		SwitchSingleWeapon(weaponName, false);
+	private void SwitchBothWeapons(WeaponEnum weapon) {
+		SwitchSingleWeapon(weapon, true);
+		SwitchSingleWeapon(weapon, false);
 	}
 
 	/// <summary>
 	/// Adds a given weapon to the provided hand
 	/// </summary>
-	private void EquipWeapon(string weaponName, bool isLeft) {
+	private void EquipWeapon(WeaponEnum weapon, bool isLeft) {
 		// Exit out if we are trying to equip the same weapon
-		if ((isLeft && leftWeapon?.GetWeaponType() == weaponName) || (!isLeft && rightWeapon?.GetWeaponName() == weaponName)) {
+		if ((isLeft && leftWeapon?.GetWeaponEnum() == weapon) || (!isLeft && rightWeapon?.GetWeaponEnum() == weapon)) {
 			return;
 		}
 
-		PackedScene scene = GD.Load<PackedScene>(GetWeaponRes(weaponName));
-		BaseWeapon weapon = scene.Instance() as BaseWeapon;
+		PackedScene scene = GD.Load<PackedScene>(weapon.GetResourcePath());
+		BaseWeapon weaponInstance = scene.Instance() as BaseWeapon;
 
-		weapon.isLeft = isLeft;
-		GetNode<Node2D>("AnimatedSprite/" + (isLeft ? "ArmLeft" : "ArmRight")).AddChild(weapon);
+		// Set the isLeft value then attach the weapon scene to the corresponding arm point
+		weaponInstance.isLeft = isLeft;
+		GetNode<Node2D>("AnimatedSprite/" + (isLeft ? "ArmLeft" : "ArmRight")).AddChild(weaponInstance);
 		if (isLeft) {
-			leftWeapon = weapon;
+			leftWeapon = weaponInstance;
 		} else {
-			rightWeapon = weapon;
+			rightWeapon = weaponInstance;
 		}
 	}
 
@@ -157,19 +156,19 @@ public class player : KinematicBody2D {
 	/// Removes the weapon from the provided hand
 	/// </summary>
 	private void UnequipWeapon(bool isLeft) {
-
-	}
-
-	/// <summary>
-	/// Gets the resource file associated with a weapon constant
-	/// </summary>
-	private string GetWeaponRes(string weapon) {
-		switch(weapon) {
-			case PISTOL: return "res://entities/weapons/pistol/pistol.tscn";
-			case SHOTGUN: return "res://entities/weapons/shotgun/shotgun.tscn";
-			default: return "res://entities/weapons/unarmed/unarmed.tscn";
+		// Exit out if we are trying to unequip a non-existant weapon
+		if ((isLeft && leftWeapon == null) || (!isLeft && rightWeapon == null)) {
+			return;
 		}
-	}
+
+		if (isLeft) {
+			leftWeapon.QueueFree();
+			leftWeapon = null;
+		} else {
+			rightWeapon.QueueFree();
+			rightWeapon = null;
+		}
+	}	
 	
 	# endregion
 }

@@ -1,15 +1,11 @@
 using Godot;
 using System;
-using entities.weapons;
+using Dulagun.Weapons;
+using Dulagun.Shared.Enums;
 
 public class unarmed : BaseWeapon {
-    public override string GetWeaponName()
+    public override WeaponEnum GetWeaponEnum()
     {
-        return "unarmed";
-    }
-
-    public override string GetWeaponType()
-    {
-        return "melee";
+        return WeaponEnum.Unarmed;
     }
 }
