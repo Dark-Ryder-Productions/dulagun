@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using entities.weapons;
 
 /// <summary>
 /// Controls for Ella, representing the player
@@ -35,8 +36,8 @@ public class player : KinematicBody2D {
 	private Vector2 vel = new Vector2();
 
 	// Weapon properties
-	private Node2D left_weapon { get; set; }
-	private Node2D right_weapon { get; set; }
+	private BaseWeapon leftWeapon { get; set; }
+	private BaseWeapon rightWeapon { get; set; }
 	
 	# endregion
 
@@ -44,6 +45,7 @@ public class player : KinematicBody2D {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
 		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		SwitchBothWeapons(UNARMED);
 	}
 
     /// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -76,7 +78,7 @@ public class player : KinematicBody2D {
 	}
 
 	# endregion
-	# region Util Methods
+	# region Animation Methods
 
 	/// <summary>
 	/// Determine which direction the sprites should be facing based on cursor position
@@ -84,8 +86,10 @@ public class player : KinematicBody2D {
 	private void HandleSpriteDirection() {
 		if (GetGlobalMousePosition().x < GlobalPosition.x) {
 			FlipSprites(true);
+			SetArmZIndex(1, -1);
 		} else {
 			FlipSprites(false);
+			SetArmZIndex(-1, 1);
 		}
 	}
 
@@ -95,12 +99,69 @@ public class player : KinematicBody2D {
 	private void FlipSprites(bool flip) {
 		sprite.FlipH = flip;
 
-		// Add weapon handling here
+		if (leftWeapon != null)
+			leftWeapon.GetNode<AnimatedSprite>("AnimatedSprite").FlipV = flip;
+		if (rightWeapon != null)
+			rightWeapon.GetNode<AnimatedSprite>("AnimatedSprite").FlipV = flip;
+	}
+
+	/// <summary>
+	/// Assign Z-Index values to either arm 
+	/// </summary>
+	private void SetArmZIndex(int leftIndex, int rightIndex) {
+		GetNode<Node2D>("AnimatedSprite/ArmLeft").ZIndex = leftIndex;
+		GetNode<Node2D>("AnimatedSprite/ArmRight").ZIndex = rightIndex;
+	}
+
+	# endregion
+	# region Weapon Handling
+
+	/// <summary>
+	/// Switches 1 given hand to use 1 given weapon
+	/// </summary>
+	private void SwitchSingleWeapon(string weaponName, bool isLeft) {
+		UnequipWeapon(isLeft);
+		EquipWeapon(weaponName, isLeft);
+	}
+
+	/// <summary>
+	/// Switches both hands to use 1 given weapon
+	/// </summary>
+	private void SwitchBothWeapons(string weaponName) {
+		SwitchSingleWeapon(weaponName, true);
+		SwitchSingleWeapon(weaponName, false);
+	}
+
+	/// <summary>
+	/// Adds a given weapon to the provided hand
+	/// </summary>
+	private void EquipWeapon(string weaponName, bool isLeft) {
+		// Exit out if we are trying to equip the same weapon
+		if ((isLeft && leftWeapon?.GetWeaponType() == weaponName) || (!isLeft && rightWeapon?.GetWeaponName() == weaponName)) {
+			return;
+		}
+
+		PackedScene scene = GD.Load<PackedScene>(GetWeaponRes(weaponName));
+		BaseWeapon weapon = scene.Instance() as BaseWeapon;
+
+		weapon.isLeft = isLeft;
+		GetNode<Node2D>("AnimatedSprite/" + (isLeft ? "ArmLeft" : "ArmRight")).AddChild(weapon);
+		if (isLeft) {
+			leftWeapon = weapon;
+		} else {
+			rightWeapon = weapon;
+		}
+	}
+
+	/// <summary>
+	/// Removes the weapon from the provided hand
+	/// </summary>
+	private void UnequipWeapon(bool isLeft) {
+
 	}
 
 	/// <summary>
 	/// Gets the resource file associated with a weapon constant
-	/// <param name="weapon"></param>
 	/// </summary>
 	private string GetWeaponRes(string weapon) {
 		switch(weapon) {
