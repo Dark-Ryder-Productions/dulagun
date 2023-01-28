@@ -60,6 +60,11 @@ public class player : KinematicBody2D {
 			vel.y = JUMP_FORCE;
 		}
 
+		// Handle weapon inputs
+		if (Input.IsActionJustPressed("equip_pistols")) SwitchBothWeapons(WeaponEnum.Pistol);
+		if (Input.IsActionJustPressed("equip_shotguns")) SwitchBothWeapons(WeaponEnum.Shotgun);
+		if (Input.IsActionJustPressed("equip_unarmed")) SwitchBothWeapons(WeaponEnum.Unarmed);
+
 		// Let gravity take effect
 		if (!isOnFloor) {
 			vel.y += GRAVITY * delta;
