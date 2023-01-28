@@ -13,5 +13,23 @@ namespace Dulagun.Weapons {
         {
             Position += Transform.x * speed * delta;
         }
+
+        /// <summary>
+        /// Handle bullet collision with a body
+        /// </summary>
+        public void _onArea2DBodyEntered(Node body) {
+            if (body.HasMethod("ApplyDamage")) {
+                // body.ApplyDamage();
+            }
+
+            QueueFree();
+        }
+
+        /// <summary>
+        /// Remove bullet when it leaves the screen
+        /// </summary>
+        public void _onScreenExit() {
+            QueueFree();
+        }
     }
 }
