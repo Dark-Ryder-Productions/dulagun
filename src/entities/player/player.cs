@@ -91,10 +91,10 @@ public class player : KinematicBody2D {
 	/// </summary>
 	private void HandleSpriteDirection() {
 		if (GetGlobalMousePosition().x < GlobalPosition.x) {
-			FlipSprites(true);
+			FlipSprites(true, false);
 			SetArmZIndex(1, -1);
 		} else {
-			FlipSprites(false);
+			FlipSprites(false, true);
 			SetArmZIndex(-1, 1);
 		}
 	}
@@ -102,13 +102,20 @@ public class player : KinematicBody2D {
 	/// <summary>
 	/// Flip the main and connected sprites
 	/// </summary>
-	private void FlipSprites(bool flip) {
+	private void FlipSprites(bool flip, bool facingRight) {
 		sprite.FlipH = flip;
 
-		if (leftWeapon != null)
-			leftWeapon.GetNode<AnimatedSprite>("AnimatedSprite").FlipV = flip;
-		if (rightWeapon != null)
-			rightWeapon.GetNode<AnimatedSprite>("AnimatedSprite").FlipV = flip;
+		if (leftWeapon != null) {
+			AnimatedSprite leftSprite = leftWeapon.GetNode<AnimatedSprite>("AnimatedSprite");
+			leftSprite.FlipV = flip;
+			leftSprite.Play(facingRight ? BaseWeapon.BACK_IDLE_ANIM : BaseWeapon.FRONT_IDLE_ANIM);
+		}
+
+		if (rightWeapon != null) {
+			AnimatedSprite rightSprite = rightWeapon.GetNode<AnimatedSprite>("AnimatedSprite");
+			rightSprite.FlipV = flip;
+			rightSprite.Play(facingRight ? BaseWeapon.FRONT_IDLE_ANIM : BaseWeapon.BACK_IDLE_ANIM);
+		}
 	}
 
 	/// <summary>

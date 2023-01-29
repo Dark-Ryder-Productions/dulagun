@@ -1,14 +1,25 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://assets/entities/weapons/shotgun/shotgun_placeholder.png" type="Texture" id=1]
+[ext_resource path="res://assets/entities/weapons/shotgun/shotgun_placeholder_front.png" type="Texture" id=1]
 [ext_resource path="res://entities/weapons/shotgun/shotgun.cs" type="Script" id=2]
 [ext_resource path="res://assets/entities/weapons/shotgun/shotgun_placeholder.wav" type="AudioStream" id=3]
+[ext_resource path="res://assets/entities/weapons/shotgun/shotgun_placeholder_back.png" type="Texture" id=4]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "back-idle",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
 "name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "front-idle",
 "speed": 5.0
 } ]
 
@@ -19,6 +30,7 @@ script = ExtResource( 2 )
 position = Vector2( 45, 0 )
 scale = Vector2( 0.3, 0.3 )
 frames = SubResource( 1 )
+animation = "back-idle"
 
 [node name="Muzzle" type="Position2D" parent="."]
 position = Vector2( 98, 0 )

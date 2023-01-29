@@ -7,6 +7,13 @@ namespace Dulagun.Weapons {
     /// Base class to define shared traits and methods of weapons
     /// </summary>
     public abstract class BaseWeapon : Node2D {
+        # region Animation Constants
+
+        public const string FRONT_IDLE_ANIM = "front-idle";
+        public const string BACK_IDLE_ANIM = "back-idle";
+
+        # endregion
+
         public abstract WeaponEnum GetWeaponEnum();
 
         /// <summary>
