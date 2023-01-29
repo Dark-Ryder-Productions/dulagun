@@ -1,21 +1,16 @@
 using Godot;
 using System;
+using Dulagun.Enemies;
 
-public class slime : Node
-{
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
-
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+namespace Dulagun.Enemies {
+	/// <summary>
+    /// A slow moving and overall weak slime creature capable of melee attacks and slow projectiles 
+    /// </summary>
+	public class slime : BaseEnemy
 	{
-		
+		public slime() {
+			health = 40;
+		}
 	}
-
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }
+

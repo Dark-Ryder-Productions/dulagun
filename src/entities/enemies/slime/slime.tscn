@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://assets/entities/enemies/slime/slime-placeholder.png" type="Texture" id=1]
-[ext_resource path="res://entities/enemies/slime/slime.gd" type="Script" id=2]
+[ext_resource path="res://entities/enemies/slime/slime.cs" type="Script" id=2]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -45,5 +45,3 @@ collision_mask = 2
 [node name="DetectPlayer" type="CollisionShape2D" parent="Search"]
 position = Vector2( -3, -2 )
 shape = SubResource( 4 )
-
-[connection signal="body_entered" from="Search" to="." method="_on_Search_body_entered"]

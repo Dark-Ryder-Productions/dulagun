@@ -2,6 +2,7 @@ using Godot;
 using System;
 using Dulagun.Weapons;
 using Dulagun.Shared.Enums;
+using Dulagun.Enemies;
 
 namespace Dulagun.Weapons {
     public class bullet : Area2D {
@@ -18,8 +19,8 @@ namespace Dulagun.Weapons {
         /// Handle bullet collision with a body
         /// </summary>
         public void _onArea2DBodyEntered(Node body) {
-            if (body.HasMethod("ApplyDamage")) {
-                // body.ApplyDamage();
+            if (body is BaseEnemy) {
+                (body as BaseEnemy).TakeDamage(damage);
             }
 
             QueueFree();
