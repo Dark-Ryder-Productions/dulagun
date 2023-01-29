@@ -20,6 +20,11 @@ namespace Dulagun.Weapons {
         public bool isFiring = false;
 
         /// <summary>
+        /// Interval between sequential firings in seconds
+        /// </summary>
+        public float fireRate = 0;
+
+        /// <summary>
         /// Default weapon behavior should have it point towards the mouse position
         /// </summary>
         public override void _Process(float delta)

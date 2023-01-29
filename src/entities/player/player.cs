@@ -125,13 +125,18 @@ public class player : KinematicBody2D {
 	/// <summary>
     /// Handles firing a given weapon
     /// </summary>
-	private void FireWeapon(BaseWeapon weapon) {
+	private async void FireWeapon(BaseWeapon weapon) {
 		if (weapon == null || (weapon.GetWeaponEnum().GetWeaponType() != WeaponTypeEnum.AutoGun && weapon.isFiring)) {
 			return;
 		}
 
 		weapon.isFiring = true;
 		weapon.Fire();
+		// If a weapon has a fire rate, we want to wait for it to cooldown before declaring the weapon is not firing
+		if (weapon.fireRate != 0) {
+			await ToSignal(GetTree().CreateTimer(weapon.fireRate), "timeout");
+		}
+
 		if (IsInstanceValid(weapon)) weapon.isFiring = false;
 	}
 
