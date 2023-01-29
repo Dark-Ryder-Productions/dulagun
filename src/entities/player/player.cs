@@ -56,7 +56,7 @@ public class player : KinematicBody2D {
 		if (Input.IsActionPressed("sprint")) isSprinting = true;
 
 		// Handle vertical movement inputs
-		if (Input.IsActionJustPressed("jump") && isOnFloor) {
+		if (Input.IsActionPressed("jump") && isOnFloor) {
 			vel.y = JUMP_FORCE;
 		}
 
