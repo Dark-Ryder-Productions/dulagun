@@ -16,15 +16,30 @@ namespace Dulagun.Enemies {
         /// </summary>
         public bool isAlive = true;
 
+        // <summary>
+        /// Can the enemy see the player?
+        /// </summary>
+        protected bool playerSpotted = false;
+        
+        // <summary>
+        /// Enemy's reference to the player
+        /// </summary>
+        protected player playerRef;
+
         /// <summary>
         /// How fast can the enemy move?
         /// </summary>
-        private const int SPEED = 100;
+        protected int speed = 100;
 
         /// <summary>
         /// How fast does the enemy fall?
         /// </summary>
         private const int GRAVITY = 80;
+
+        /// <summary>
+        /// Enemy's velocity
+        /// </summary>
+        protected Vector2 vel = new Vector2();
 
         public override void _Ready()
         {
@@ -37,6 +52,8 @@ namespace Dulagun.Enemies {
                 QueueFree();
                 return;
             }
+
+            vel.y += GRAVITY * delta;
         }
 
         /// <summary>

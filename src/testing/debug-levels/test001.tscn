@@ -36,7 +36,7 @@ position = Vector2( 378, 853 )
 position = Vector2( 309, 853 )
 
 [node name="Slime6" parent="Enemies" instance=ExtResource( 3 )]
-position = Vector2( 161, 853 )
+position = Vector2( 127, 787 )
 
 [node name="Platforms" type="Node2D" parent="."]
 
