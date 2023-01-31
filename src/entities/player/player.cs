@@ -17,10 +17,8 @@ public class player : KinematicBody2D {
 	// Movement constants
 	private const int JUMP_FORCE = -600;
 	private const int GRAVITY = 1200;
-	private const int WALL_SLIDE = 300;
 	private const int SPEED = 500;
 	private const int SPRINT_SPEED = 900;
-	private const double IN_AIR_SPEED_MOD = 0.02;
 	private const float ACCEL = 0.25F;
 
 	# endregion	

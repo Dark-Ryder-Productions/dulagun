@@ -46,8 +46,7 @@ position = Vector2( -1, 32.5 )
 shape = SubResource( 3 )
 
 [node name="Search" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
 
 [node name="DetectPlayer" type="CollisionShape2D" parent="Search"]
 position = Vector2( -3, -2 )

@@ -27,7 +27,7 @@ namespace Dulagun.Weapons {
 
             muzzle.RotationDegrees = 0;
             // Spread pellets
-            foreach(int degrees in Enumerable.Range(-5, 5)) {
+            foreach(int degrees in  new int[] { -5, -3, 0, 3, 5 }) {
                 bullet bullet = bulletScene.Instance() as bullet;
                 GetParent().AddChild(bullet);
 
