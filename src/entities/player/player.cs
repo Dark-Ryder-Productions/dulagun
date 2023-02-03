@@ -32,18 +32,27 @@ public class player : KinematicBody2D {
 	// Weapon properties
 	private BaseWeapon leftWeapon { get; set; }
 	private BaseWeapon rightWeapon { get; set; }
+
+	// Health & Damage properties
+	private int health { get; set; }
 	
 	# endregion
 
 	# region Engine Methods
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready() {
+		// Planning to set this here based on save file
+		health = 100;
 		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		SwitchBothWeapons(WeaponEnum.Unarmed);
 	}
 
     /// Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta) {
+		if (health <= 0) {
+			QueueFree();
+		}
+
 		int inputXVelocity = 0;
 		bool isSprinting = false;
 		bool isOnFloor = IsOnFloor();
@@ -201,5 +210,15 @@ public class player : KinematicBody2D {
 		}
 	}	
 	
+	# endregion
+	# region Health Handling
+
+	/// <summary>
+	/// Apply damage to the player
+	/// </summary>
+	public void TakeDamage(int dmg) {
+		health -= dmg;
+	}
+
 	# endregion
 }
