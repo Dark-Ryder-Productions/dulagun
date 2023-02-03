@@ -33,7 +33,7 @@ scale = Vector2( 3.333, 3.333 )
 z_index = 1
 
 [node name="ArmLeft" type="Node2D" parent="AnimatedSprite"]
-position = Vector2( 36.667, -136.667 )
+position = Vector2( 35.519, -136.667 )
 scale = Vector2( 3.333, 3.333 )
 z_index = 1
 

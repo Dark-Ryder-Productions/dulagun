@@ -31,18 +31,32 @@ namespace Dulagun.Weapons {
         /// </summary>
         public float fireRate = 0;
 
+        public override void _Ready() {
+            PointGun();
+        }
+
         /// <summary>
         /// Default weapon behavior should have it point towards the mouse position
         /// </summary>
         public override void _Process(float delta)
         {
-            LookAt(GetGlobalMousePosition());
+            PointGun();
         }
 
         /// <summary>
         /// Fire the weapon
         /// </summary>
         public abstract void Fire();
+
+        /// <summary>
+        /// If weapon is a gun, point it towards the cursor
+        /// </summary>
+        private void PointGun() {
+            WeaponTypeEnum type = GetWeaponEnum().GetWeaponType();
+            if (type == WeaponTypeEnum.AutoGun || type == WeaponTypeEnum.SemiAutoGun) {
+                LookAt(GetGlobalMousePosition());
+            }
+        }
 
         /// <summary>
         /// Load the packed bullet scene
