@@ -18,7 +18,6 @@ public class player : KinematicBody2D {
 	private const int JUMP_FORCE = -600;
 	private const int GRAVITY = 1200;
 	private const int SPEED = 500;
-	private const int SPRINT_SPEED = 900;
 	private const float ACCEL = 0.25F;
 
 	# endregion	
@@ -54,13 +53,11 @@ public class player : KinematicBody2D {
 		}
 
 		int inputXVelocity = 0;
-		bool isSprinting = false;
 		bool isOnFloor = IsOnFloor();
 
 		// Handle horizontal movement inputs
 		if (Input.IsActionPressed("move_left")) inputXVelocity -= 1;
 		if (Input.IsActionPressed("move_right")) inputXVelocity += 1;
-		if (Input.IsActionPressed("sprint")) isSprinting = true;
 
 		// Handle vertical movement inputs
 		if (Input.IsActionPressed("jump") && isOnFloor) {
@@ -84,8 +81,7 @@ public class player : KinematicBody2D {
 		HandleSpriteDirection();
 
 		// Compute velocity and apply
-		int moveSpeed = isSprinting ? SPRINT_SPEED : SPEED;
-		vel.x = Mathf.Lerp(vel.x, inputXVelocity * moveSpeed, ACCEL);
+		vel.x = Mathf.Lerp(vel.x, inputXVelocity * SPEED, ACCEL);
 		vel = MoveAndSlide(vel, Vector2.Up);
 		
 	}
