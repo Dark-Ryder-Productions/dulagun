@@ -2,6 +2,7 @@ using Godot;
 using System;
 using Dulagun.Weapons;
 using Dulagun.Shared.Enums;
+using Dulagun.Menus.WeaponSelect;
 
 /// <summary>
 /// Controls for Ella, representing the player
@@ -31,6 +32,8 @@ public class player : KinematicBody2D {
 	// Weapon properties
 	private BaseWeapon leftWeapon { get; set; }
 	private BaseWeapon rightWeapon { get; set; }
+
+	private bool isWeaponMenuOpen = false;
 
 	// Health & Damage properties
 	private int health { get; set; }
@@ -71,6 +74,14 @@ public class player : KinematicBody2D {
 
 		if (Input.IsActionJustPressed("fire_left_weapon")) FireWeapon(leftWeapon);
 		if (Input.IsActionJustPressed("fire_right_weapon")) FireWeapon(rightWeapon);
+
+		bool isHoldingWeaponSelect = Input.IsActionPressed("open_weapon_select");
+		if (isHoldingWeaponSelect && !isWeaponMenuOpen) {
+			OpenWeaponSelectMenu();
+		} else if (!isHoldingWeaponSelect && isWeaponMenuOpen) {
+			CloseWeaponSelectMenu();
+		}
+
 
 		// Let gravity take effect
 		if (!isOnFloor) {
@@ -131,6 +142,24 @@ public class player : KinematicBody2D {
 
 	# endregion
 	# region Weapon Handling
+
+	/// <summary>
+    /// Handles loading the weapon select menu and opening
+    /// </summary>
+	private void OpenWeaponSelectMenu() {
+		PackedScene weaponSelect = GD.Load<PackedScene>("res://menus/weapon-select/weapon-select-menu.tscn");
+		weaponSelectMenu menu = weaponSelect.Instance() as weaponSelectMenu;
+		AddChild(menu);
+		isWeaponMenuOpen = true;
+	}
+
+	/// <summary>
+    /// Closes the weapon select menu
+    /// </summary>
+	private void CloseWeaponSelectMenu() {
+		GetNode<Control>("WeaponMenu").QueueFree();
+		isWeaponMenuOpen = false;
+	}
 
 	/// <summary>
     /// Handles firing a given weapon
